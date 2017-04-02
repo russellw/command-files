@@ -3,6 +3,9 @@
   "bugs": {
     "url": "https://github.com/russellw/command-files/issues"
   },
+  "dependencies": {
+    "glob": "^7.1.1"
+  },
   "description": "Expand command line file args",
   "homepage": "https://github.com/russellw/command-files#readme",
   "keywords": [
@@ -19,8 +22,5 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "version": "1.0.0",
-  "dependencies": {
-    "glob": "^7.1.1"
-  }
+  "version": "1.0.0"
 }
