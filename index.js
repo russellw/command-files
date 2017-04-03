@@ -33,7 +33,7 @@ function response(arg, output) {
 	}
 }
 
-// API
+// Exports
 
 function expand(args, callback) {
 
