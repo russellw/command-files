@@ -1,91 +1,83 @@
-'use strict';
-var fs = require('fs');
-var glob = require('glob');
-var os = require('os');
+'use strict'
+var fs = require('fs')
+var glob = require('glob')
+var os = require('os')
 
 function dive(dir, callback, output) {
-	var files = fs.readdirSync(dir);
+	var files = fs.readdirSync(dir)
 	for (var file of files) {
-		var path = dir + '/' + file;
-		var stats = fs.statSync(path);
+		var path = dir + '/' + file
+		var stats = fs.statSync(path)
 		if (stats.isDirectory()) {
-			dive(path, callback, output);
-			continue;
+			dive(path, callback, output)
+			continue
 		}
-		if (callback(path)) {
-			output.push(path);
-		}
+		if (callback(path))
+			output.push(path)
 	}
 }
-
-function response(arg, output) {
-	var file = arg.slice(1);
-	var text = fs.readFileSync(file, {
-		encoding: 'utf8',
-	});
-	var lines = text.split(/\r?\n/);
-	for (var line of lines) {
-		if (line[0] === '@') {
-			response(line, output);
-			continue;
-		}
-		output.push(line);
-	}
-}
-
-// Exports
 
 function expand(args, callback) {
-
 	// - means stdin
-	if (args.length === 1 && args[0] === '-') {
-		return [];
-	}
+	if (args.length === 1 && args[0] === '-')
+		return []
 
 	// Glob
-	var output = args;
+	var output = args
 	if (os.platform() === 'win32') {
-		output = [];
-		for (var pattern of args) {
+		output = []
+		for (var pattern of args)
 			for (var file of glob.sync(pattern, {
 				nonull: true,
 				nosort: true,
-			})) {
-				output.push(file);
-			}
-		}
+			}))
+				output.push(file)
 	}
 
 	// Response files
-	var lines = output;
-	output = [];
+	var lines = output
+	output = []
 	for (var line of lines) {
 		if (line[0] === '@') {
-			response(line, output);
-			continue;
+			response(line, output)
+			continue
 		}
-		output.push(line);
+		output.push(line)
 	}
 
 	// Directory
-	if (!callback) {
-		return output;
-	}
-	var files = output;
-	output = [];
+	if (!callback)
+		return output
+	var files = output
+	output = []
 	for (var file of files) {
-		var path = file;
+		var path = file
 		try {
-			var stats = fs.statSync(path);
+			var stats = fs.statSync(path)
 			if (stats.isDirectory()) {
-				dive(path, callback, output);
-				continue;
+				dive(path, callback, output)
+				continue
 			}
 		} catch (e) {
 		}
-		output.push(path);
+		output.push(path)
 	}
-	return output;
+	return output
 }
 
-exports.expand = expand;
+function response(arg, output) {
+	var file = arg.slice(1)
+	var text = fs.readFileSync(file, {
+		encoding: 'utf8',
+	})
+	var lines = text.split(/\r?\n/)
+	for (var line of lines) {
+		if (line[0] === '@') {
+			response(line, output)
+			continue
+		}
+		output.push(line)
+	}
+}
+
+exports.expand = expand
