@@ -72,6 +72,8 @@ function response(arg, output) {
 	})
 	var lines = text.split(/\r?\n/)
 	for (var line of lines) {
+		if (!line)
+			continue
 		if (line[0] === '@') {
 			response(line, output)
 			continue
